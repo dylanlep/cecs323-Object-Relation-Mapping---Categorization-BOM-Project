@@ -20,6 +20,10 @@ def add(sess):
     menu_action = add_menu.menu_prompt()
     exec(menu_action)
 
+def add_vendor(sess):
+    name = input('Enter vendor name: ')
+    sess.add(Vendor(name))
+
 if __name__ == "__main__":
     print("Starting Part Categorization BOM Project...")
     
