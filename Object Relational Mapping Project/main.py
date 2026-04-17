@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
     # For Task 1, we don't need the menu loop yet. 
     # You can exit here, or comment this out until you start Task 2.
-    # menu_action: str = ''
-    # while menu_action != menu_main.last_action():
-    #     menu_action = menu_main.menu_prompt()
-    #     exec(menu_action)
+    menu_action: str = ''
+    while menu_action != menu_main.last_action():
+        menu_action = menu_main.menu_prompt()
+        exec(menu_action)
