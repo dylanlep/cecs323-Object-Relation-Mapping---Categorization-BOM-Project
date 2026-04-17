@@ -12,7 +12,13 @@ from AssemblyPart import AssemblyPart
 
 # (You can leave the menu imports here for Task 2, 
 # but for Task 1 we just want to create the tables)
-from menu_definitions import menu_main
+from menu_definitions import *
+
+sess = Session
+
+def add(sess):
+    menu_action = add_menu.menu_prompt()
+    exec(menu_action)
 
 if __name__ == "__main__":
     print("Starting Part Categorization BOM Project...")
