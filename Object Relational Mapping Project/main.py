@@ -168,7 +168,7 @@ def delete_part(sess):
 
     # if part could not be found, then deletion cannot be done
     if part is None:
-        print("")
+        print(f"Part with name {name} could not be found.")
         return
     
     # otherwise, let's check if any assembly parts depend on this part; if so,
@@ -177,16 +177,16 @@ def delete_part(sess):
         select(AssemblyPart).where(AssemblyPart.assembly_part_name == name)
     )
 
-    if result.scalars().first is not None:
-        print("")
+    if result.scalars().first() is not None:
+        print(f"Part is the assembly of an assembly part.")
         return
     
     result = sess.execute(
         select(AssemblyPart).where(AssemblyPart.component_part_name == name)
     )
 
-    if result.scalars().first is not None:
-        print("")
+    if result.scalars().first() is not None:
+        print("Part is a component of an assembly part.")
         return
     
     # only if we are able to get here do we finally delete the part!
