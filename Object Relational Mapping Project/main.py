@@ -180,6 +180,33 @@ def delete_assembly_part(sess):
     # otherwise, perform deletion!
     else:
         sess.delete(assembly_part)
+
+def delete_vendor(sess):
+    # get vendor to be deleted
+    name = input("Enter vendor name: ")
+    result = sess.execute(
+        select(Vendor).where(Vendor.name == name)
+    )
+    vendor = result.scalars().first()
+
+    # if vendor could not be found, then no deletion can be done
+    if vendor is None:
+        print(f"Vendor with name {name} could not be found.")
+        return
+
+    # otherwise, look for piece parts that rely on this vendor
+    result = sess.execute(
+        select(PiecePart).where(PiecePart.vendor_name == vendor.name)
+    )
+    dependent_part = result.scalars().first()
+
+    # if any exist, then we cannot delete this vendor!
+    if (dependent_part is not None):
+        print(f"Piece part with name {dependent_part.part_name} depends on this vendor.")
+        return
+    
+    # otherwise, delete it
+    sess.delete(vendor)
 #endregion
 
 if __name__ == "__main__":
