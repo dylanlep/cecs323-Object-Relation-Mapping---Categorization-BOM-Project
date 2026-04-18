@@ -272,6 +272,31 @@ def update_assembly_part(sess):
         quantity = int(input("Enter new quantity: "))
         assembly_part.quantity = quantity
 
+def update_vendor(sess):
+    # get vendor to update
+    name = input("Enter vendor name: ")
+    result = sess.execute(
+        select(Vendor).where(Vendor.name == name)
+    )
+    vendor = result.scalars().first()
+
+    # if vendor cannot be found, then update cannot be done
+    if vendor is None:
+        print(f"Vendor with name {name} could not be found.")
+        return
+
+    # if any piece parts reference this vendor, then update cannot be done also
+    result = sess.execute(
+        select(PiecePart).where(PiecePart.vendor_name == name)
+    )
+
+    if result.scalars().first() is not None:
+        print("A piece part references this vendor.")
+        return
+    
+    # only after passing those checks do we allow the user to update the vendor
+    new_name = int(input("Enter new vendor name: "))
+    vendor.name = new_name
 #endregion
 
 if __name__ == "__main__":
