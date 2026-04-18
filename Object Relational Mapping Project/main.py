@@ -42,6 +42,15 @@ def add_piece_part(sess):
     else:
         sess.add(PiecePart(name, num, vendor))
 
+def add_assembly(sess):
+    name = input('Enter assembly name: ')
+    num = input('Enter assembly number: ')
+
+    sess.add(Assembly(name, num))
+
+def add_assembly_part(sess):
+    pass
+
 def add_vendor(sess):
     name = input('Enter vendor name: ')
     sess.add(Vendor(name))

@@ -25,6 +25,7 @@ menu_main = Menu('main', 'Please select one of the following options:', [
 add_menu = Menu('add', 'Please indicate what you want to add:', [
     Option("Piece Part", "add_piece_part(sess)"),
     Option("Assembly", "add_assembly(sess)"),
+    Option("Assembly Part (AKA Usage)", "add_assembly_part(sess)"),
     Option("Vendor", "add_vendor(sess)"),
     Option("Exit", "pass")
 ])
