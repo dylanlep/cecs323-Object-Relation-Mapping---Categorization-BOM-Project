@@ -21,3 +21,6 @@ class AssemblyPart(Base):
         self.assembly = assembly
         self.component = component
         self.quantity = quantity
+    
+    def __str__(self):
+        return f"Quantity: {self.quantity}"

@@ -17,3 +17,6 @@ class PiecePart(Part):
     def __init__(self, name: str, number: str, vendor):
         super().__init__(name, number)
         self.vendor_name = vendor.name
+    
+    def __str__(self):
+        return f"{super().__str__()}, Vendor: {self.vendor_name}"

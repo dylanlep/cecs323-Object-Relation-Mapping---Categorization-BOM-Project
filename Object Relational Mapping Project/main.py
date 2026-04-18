@@ -1,5 +1,7 @@
 import logging
+
 from sqlalchemy import select
+from sqlalchemy import and_
 
 from db_connection import engine, Session
 from orm_base import Base
@@ -18,6 +20,7 @@ from menu_definitions import *
 
 sess = Session
 
+#region Add
 def add(sess):
     menu_action = add_menu.menu_prompt()
     exec(menu_action)
@@ -85,6 +88,70 @@ def add_assembly_part(sess):
 def add_vendor(sess):
     name = input('Enter vendor name: ')
     sess.add(Vendor(name))
+#endregion
+
+#region Report Data
+def report_data(sess):
+    menu_action = report_data_menu.menu_prompt()
+    exec(menu_action)
+
+def report_data_part(sess):
+    # find part
+    name = input("Enter part name: ")
+    result = sess.execute(
+        select(Part).where(Part.name == name)
+    )
+    part = result.scalars().first()
+
+    # if part could not be found, then we cannot print its data
+    if part is None:
+        print(f"Part with name {name} could not be found.")
+
+    # otherwise, we print its data
+    else:
+        print(part)
+
+def report_data_assembly_part(sess):
+    # get necessary details to locate assembly part
+    assembly_name = input("Enter assembly name: ")
+    component_name = input("Enter component name: ")
+
+    # locate assembly part
+    result = sess.execute(
+        select(AssemblyPart).where(
+            and_(
+                AssemblyPart.assembly_part_name == assembly_name,
+                AssemblyPart.component_part_name == component_name
+            )
+        )
+    )
+    assembly_part = result.scalars().first()
+
+    # if matching assembly part cannot be found, then we cannot print its data
+    if assembly_part is None:
+        print(f"Assembly part with assembly {assembly_name} and component {component_name} could not be found.")
+
+    # otherwise, we print its data
+    else:
+        print(assembly_part)
+
+def report_data_vendor(sess):
+    # get vendor whose data is to be reported
+    vendor_name = input('Enter vendor name: ')
+    result = sess.execute(
+        select(Vendor).where(Vendor.name == vendor_name)
+    )
+
+    vendor = result.scalars().first()
+    
+    # if vendor cannot be found, then we cannot print its data
+    if vendor is None:
+        print(f"Vendor with name {vendor_name} could not be found.")
+
+    # otherwise, we print its data
+    else:
+        print(f"{vendor}")
+#endregion
 
 if __name__ == "__main__":
     print("Starting Part Categorization BOM Project...")
