@@ -14,7 +14,7 @@ variables or not in Python.
 # The main options for operating on Departments and Courses.
 menu_main = Menu('main', 'Please select one of the following options:', [
     Option("Add", "add(sess)"),
-    Option("List", "list_objects(sess)"),
+    Option("Report Data", "report_data(sess)"),
     Option("Delete", "delete(sess)"),
     Option("Boilerplate Data", "boilerplate(sess)"),
     Option("Commit", "sess.commit()"),
@@ -27,6 +27,14 @@ add_menu = Menu('add', 'Please indicate what you want to add:', [
     Option("Assembly", "add_assembly(sess)"),
     Option("Assembly Part (AKA Usage)", "add_assembly_part(sess)"),
     Option("Vendor", "add_vendor(sess)"),
+    Option("Exit", "pass")
+])
+
+report_data_menu = Menu('report data', 'Please indicate what kind of data you want to report:', [
+    Option("Piece Part", "report_data_piece_part(sess)"),
+    Option("Assembly", "report_data_assembly(sess)"),
+    Option("Assembly Part (AKA Usage)", "report_data_assembly_part(sess)"),
+    Option("Vendor", "report_data_vendor(sess)"),
     Option("Exit", "pass")
 ])
 

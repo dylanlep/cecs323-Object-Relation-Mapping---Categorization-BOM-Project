@@ -18,6 +18,7 @@ from menu_definitions import *
 
 sess = Session
 
+#region Add
 def add(sess):
     menu_action = add_menu.menu_prompt()
     exec(menu_action)
@@ -85,6 +86,13 @@ def add_assembly_part(sess):
 def add_vendor(sess):
     name = input('Enter vendor name: ')
     sess.add(Vendor(name))
+#endregion
+
+#region Report Data
+def report_data(sess):
+    menu_action = report_data_menu.menu_prompt()
+    exec(menu_action)
+#endregion
 
 if __name__ == "__main__":
     print("Starting Part Categorization BOM Project...")
