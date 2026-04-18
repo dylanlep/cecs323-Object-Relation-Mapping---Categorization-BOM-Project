@@ -15,6 +15,7 @@ variables or not in Python.
 menu_main = Menu('main', 'Please select one of the following options:', [
     Option("Add", "add(sess)"),
     Option("Report Data", "report_data(sess)"),
+    Option("Required Reports", "reports(sess)"),
     Option("Delete", "delete(sess)"),
     Option("Update", "update(sess)"),
     Option("Commit", "sess.commit()"),
@@ -34,6 +35,12 @@ report_data_menu = Menu('report data', 'Please indicate what kind of data you wa
     Option("Part", "report_data_part(sess)"),
     Option("Assembly Part (AKA Usage)", "report_data_assembly_part(sess)"),
     Option("Vendor", "report_data_vendor(sess)"),
+    Option("Exit", "pass")
+])
+
+report_menu = Menu('reports', 'Please select a report:', [
+    Option("Hierarchy Report", "hierarchy_report(sess)"),
+    Option("Assemblies With Greatest Number of Components", "max_component_report(sess)"),
     Option("Exit", "pass")
 ])
 
