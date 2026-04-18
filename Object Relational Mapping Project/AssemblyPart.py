@@ -1,8 +1,6 @@
 from orm_base import Base
 from sqlalchemy import ForeignKey, Integer, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from Assembly import Assembly
-from Part import Part
 
 class AssemblyPart(Base):
     __tablename__ = "assembly_parts"
