@@ -295,7 +295,7 @@ def update_vendor(sess):
         return
     
     # only after passing those checks do we allow the user to update the vendor
-    new_name = int(input("Enter new vendor name: "))
+    new_name = input("Enter new vendor name: ")
     vendor.name = new_name
 #endregion
 
