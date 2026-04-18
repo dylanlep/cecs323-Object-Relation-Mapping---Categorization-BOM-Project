@@ -37,16 +37,10 @@ report_data_menu = Menu('report data', 'Please indicate what kind of data you wa
     Option("Exit", "pass")
 ])
 
-delete_menu = Menu('delete', 'Please indicate what you want to delete from:', [
-    Option("Department", "delete_department(sess)"),
-    Option("Course", "delete_course(sess)"),
-    Option("Major", "delete_major(sess)"),
-    Option("Student", "delete_student(sess)"),
-    Option("Section", "delete_section(sess)"),
-    Option("Student to Major", "delete_student_major(sess)"),
-    Option("Major to Student", "delete_major_student(sess)"),
-    Option("Student to Section", "delete_student_section(sess)"),
-    Option("Section to Student", "delete_student_section(sess)"),
+delete_menu = Menu('delete', 'Please indicate what you want to delete:', [
+    Option("Part", "delete_part(sess)"),
+    Option("Assembly Part (AKA Usage)", "delete_assembly_part(sess)"),
+    Option("Vendor", "delete_vendor(sess)"),
     Option("Exit", "pass")
 ])
 

@@ -153,6 +153,35 @@ def report_data_vendor(sess):
         print(f"{vendor}")
 #endregion
 
+#region Delete
+def delete(sess):
+    menu_action = delete_menu.menu_prompt()
+    exec(menu_action)
+
+def delete_assembly_part(sess):
+    # look for assembly part
+    assembly_name = input("Enter assembly name: ")
+    component_name = input("Enter component name: ")
+
+    result = sess.execute(
+        select(AssemblyPart).where(
+            and_(
+                AssemblyPart.assembly_part_name == assembly_name,
+                AssemblyPart.component_part_name == component_name
+            )
+        )
+    )
+    assembly_part = result.scalars().first()
+
+    # if assembly part could not be found, then no deletion can be done
+    if assembly_part is None:
+        print(f"Assembly part with assembly {assembly_name} and component {component_name} could not be found.")
+    
+    # otherwise, perform deletion!
+    else:
+        sess.delete(assembly_part)
+#endregion
+
 if __name__ == "__main__":
     print("Starting Part Categorization BOM Project...")
     
