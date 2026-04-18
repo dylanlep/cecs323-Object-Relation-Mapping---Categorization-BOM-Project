@@ -248,6 +248,23 @@ def update(sess):
     menu_action = update_menu.menu_prompt()
     exec(menu_action)
 
+def update_part(sess):
+    # look for part
+    name = input("Enter part name: ")
+    result = sess.execute(
+        select(Part).where(Part.name == name)
+    )
+    part = result.scalars().first()
+
+    # if part could not be found, then update cannot be done
+    if part is None:
+        print("")
+
+    # otherwise, we let the user change the part number
+    else:
+        new_number = int(input("Enter new part number: "))
+        part.number = new_number
+
 def update_assembly_part(sess):
     # look for assembly part
     assembly_name = input("Enter assembly name: ")
