@@ -1,5 +1,7 @@
 import logging
+
 from sqlalchemy import select
+from sqlalchemy import and_
 
 from db_connection import engine, Session
 from orm_base import Base
@@ -92,6 +94,30 @@ def add_vendor(sess):
 def report_data(sess):
     menu_action = report_data_menu.menu_prompt()
     exec(menu_action)
+
+def report_data_assembly_part(sess):
+    # get necessary details to locate assembly part
+    assembly_name = input("Enter assembly name: ")
+    component_name = input("Enter component name: ")
+
+    # locate assembly part
+    result = sess.execute(
+        select(AssemblyPart).where(
+            and_(
+                AssemblyPart.assembly.name == assembly_name,
+                AssemblyPart.component.name == component_name
+            )
+        )
+    )
+    assembly_part = result.scalars().first()
+
+    # if matching assembly part cannot be found, then we cannot print its data
+    if assembly_part is None:
+        print(f"Assembly part with assembly {assembly_name} and component {component_name} could not be found.")
+
+    # otherwise, we print its data
+    else:
+        print(assembly_part)
 
 def report_data_vendor(sess):
     # get vendor whose data is to be reported
