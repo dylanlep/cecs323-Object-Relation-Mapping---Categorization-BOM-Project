@@ -31,8 +31,7 @@ add_menu = Menu('add', 'Please indicate what you want to add:', [
 ])
 
 report_data_menu = Menu('report data', 'Please indicate what kind of data you want to report:', [
-    Option("Piece Part", "report_data_piece_part(sess)"),
-    Option("Assembly", "report_data_assembly(sess)"),
+    Option("Part", "report_data_part(sess)"),
     Option("Assembly Part (AKA Usage)", "report_data_assembly_part(sess)"),
     Option("Vendor", "report_data_vendor(sess)"),
     Option("Exit", "pass")

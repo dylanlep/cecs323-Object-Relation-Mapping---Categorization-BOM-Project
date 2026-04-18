@@ -92,6 +92,23 @@ def add_vendor(sess):
 def report_data(sess):
     menu_action = report_data_menu.menu_prompt()
     exec(menu_action)
+
+def report_data_vendor(sess):
+    # get vendor whose data is to be reported
+    vendor_name = input('Enter vendor name: ')
+    result = sess.execute(
+        select(Vendor).where(Vendor.name == vendor_name)
+    )
+
+    vendor = result.scalars().first()
+    
+    # if vendor cannot be found, then we cannot print its data
+    if vendor is None:
+        print(f"Vendor with name {vendor_name} could not be found.")
+
+    # otherwise, we print its data
+    else:
+        print(f"{vendor}")
 #endregion
 
 if __name__ == "__main__":
