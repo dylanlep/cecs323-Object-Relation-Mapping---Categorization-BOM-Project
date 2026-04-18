@@ -120,8 +120,8 @@ def report_data_assembly_part(sess):
     result = sess.execute(
         select(AssemblyPart).where(
             and_(
-                AssemblyPart.assembly.name == assembly_name,
-                AssemblyPart.component.name == component_name
+                AssemblyPart.assembly_part_name == assembly_name,
+                AssemblyPart.component_part_name == component_name
             )
         )
     )
