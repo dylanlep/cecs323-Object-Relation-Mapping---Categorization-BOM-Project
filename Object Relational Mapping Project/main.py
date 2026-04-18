@@ -95,6 +95,22 @@ def report_data(sess):
     menu_action = report_data_menu.menu_prompt()
     exec(menu_action)
 
+def report_data_part(sess):
+    # find part
+    name = input("Enter part name: ")
+    result = sess.execute(
+        select(Part).where(Part.name == name)
+    )
+    part = result.scalars().first()
+
+    # if part could not be found, then we cannot print its data
+    if part is None:
+        print(f"Part with name {name} could not be found.")
+
+    # otherwise, we print its data
+    else:
+        print(part)
+
 def report_data_assembly_part(sess):
     # get necessary details to locate assembly part
     assembly_name = input("Enter assembly name: ")
