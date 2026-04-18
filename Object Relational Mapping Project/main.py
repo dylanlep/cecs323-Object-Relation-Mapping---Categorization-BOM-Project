@@ -243,6 +243,37 @@ def delete_vendor(sess):
     sess.delete(vendor)
 #endregion
 
+#region Update
+def update(sess):
+    menu_action = update_menu.menu_prompt()
+    exec(menu_action)
+
+def update_assembly_part(sess):
+    # look for assembly part
+    assembly_name = input("Enter assembly name: ")
+    component_name = input("Enter component name: ")
+
+    result = sess.execute(
+        select(AssemblyPart).where(
+            and_(
+                AssemblyPart.assembly_part_name == assembly_name,
+                AssemblyPart.component_part_name == component_name
+            )
+        )
+    )
+    assembly_part = result.scalars().first()
+
+    # if assembly part cannot be found, then modification cannot be made
+    if assembly_part is None:
+        print(f"Assembly part with assembly {assembly_name} and component {component_name} could not be found.")
+
+    # otherwise, let the user modify the quantity
+    else:
+        quantity = int(input("Enter new quantity: "))
+        assembly_part.quantity = quantity
+
+#endregion
+
 if __name__ == "__main__":
     print("Starting Part Categorization BOM Project...")
     
