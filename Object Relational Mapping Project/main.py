@@ -153,6 +153,169 @@ def report_data_vendor(sess):
         print(f"{vendor}")
 #endregion
 
+#region Delete
+def delete(sess):
+    menu_action = delete_menu.menu_prompt()
+    exec(menu_action)
+
+def delete_part(sess):
+    # get part to delete
+    name = input("Enter part name: ")
+    result = sess.execute(
+        select(Part).where(Part.name == name)
+    )
+    part = result.scalars().first()
+
+    # if part could not be found, then deletion cannot be done
+    if part is None:
+        print(f"Part with name {name} could not be found.")
+        return
+    
+    # otherwise, let's check if any assembly parts depend on this part; if so,
+    # then we once again cannot delete this object
+    result = sess.execute(
+        select(AssemblyPart).where(AssemblyPart.assembly_part_name == name)
+    )
+
+    if result.scalars().first() is not None:
+        print(f"Part is the assembly of an assembly part.")
+        return
+    
+    result = sess.execute(
+        select(AssemblyPart).where(AssemblyPart.component_part_name == name)
+    )
+
+    if result.scalars().first() is not None:
+        print("Part is a component of an assembly part.")
+        return
+    
+    # only if we are able to get here do we finally delete the part!
+    sess.delete(part)
+
+def delete_assembly_part(sess):
+    # look for assembly part
+    assembly_name = input("Enter assembly name: ")
+    component_name = input("Enter component name: ")
+
+    result = sess.execute(
+        select(AssemblyPart).where(
+            and_(
+                AssemblyPart.assembly_part_name == assembly_name,
+                AssemblyPart.component_part_name == component_name
+            )
+        )
+    )
+    assembly_part = result.scalars().first()
+
+    # if assembly part could not be found, then no deletion can be done
+    if assembly_part is None:
+        print(f"Assembly part with assembly {assembly_name} and component {component_name} could not be found.")
+    
+    # otherwise, perform deletion!
+    else:
+        sess.delete(assembly_part)
+
+def delete_vendor(sess):
+    # get vendor to be deleted
+    name = input("Enter vendor name: ")
+    result = sess.execute(
+        select(Vendor).where(Vendor.name == name)
+    )
+    vendor = result.scalars().first()
+
+    # if vendor could not be found, then no deletion can be done
+    if vendor is None:
+        print(f"Vendor with name {name} could not be found.")
+        return
+
+    # otherwise, look for piece parts that rely on this vendor
+    result = sess.execute(
+        select(PiecePart).where(PiecePart.vendor_name == vendor.name)
+    )
+    dependent_part = result.scalars().first()
+
+    # if any exist, then we cannot delete this vendor!
+    if (dependent_part is not None):
+        print(f"Piece part with name {dependent_part.name} depends on this vendor.")
+        return
+    
+    # otherwise, delete it
+    sess.delete(vendor)
+#endregion
+
+#region Update
+def update(sess):
+    menu_action = update_menu.menu_prompt()
+    exec(menu_action)
+
+def update_part(sess):
+    # look for part
+    name = input("Enter part name: ")
+    result = sess.execute(
+        select(Part).where(Part.name == name)
+    )
+    part = result.scalars().first()
+
+    # if part could not be found, then update cannot be done
+    if part is None:
+        print("")
+
+    # otherwise, we let the user change the part number
+    else:
+        new_number = int(input("Enter new part number: "))
+        part.number = new_number
+
+def update_assembly_part(sess):
+    # look for assembly part
+    assembly_name = input("Enter assembly name: ")
+    component_name = input("Enter component name: ")
+
+    result = sess.execute(
+        select(AssemblyPart).where(
+            and_(
+                AssemblyPart.assembly_part_name == assembly_name,
+                AssemblyPart.component_part_name == component_name
+            )
+        )
+    )
+    assembly_part = result.scalars().first()
+
+    # if assembly part cannot be found, then modification cannot be made
+    if assembly_part is None:
+        print(f"Assembly part with assembly {assembly_name} and component {component_name} could not be found.")
+
+    # otherwise, let the user modify the quantity
+    else:
+        quantity = int(input("Enter new quantity: "))
+        assembly_part.quantity = quantity
+
+def update_vendor(sess):
+    # get vendor to update
+    name = input("Enter vendor name: ")
+    result = sess.execute(
+        select(Vendor).where(Vendor.name == name)
+    )
+    vendor = result.scalars().first()
+
+    # if vendor cannot be found, then update cannot be done
+    if vendor is None:
+        print(f"Vendor with name {name} could not be found.")
+        return
+
+    # if any piece parts reference this vendor, then update cannot be done also
+    result = sess.execute(
+        select(PiecePart).where(PiecePart.vendor_name == name)
+    )
+
+    if result.scalars().first() is not None:
+        print("A piece part references this vendor.")
+        return
+    
+    # only after passing those checks do we allow the user to update the vendor
+    new_name = input("Enter new vendor name: ")
+    vendor.name = new_name
+#endregion
+
 if __name__ == "__main__":
     print("Starting Part Categorization BOM Project...")
     

@@ -16,7 +16,7 @@ menu_main = Menu('main', 'Please select one of the following options:', [
     Option("Add", "add(sess)"),
     Option("Report Data", "report_data(sess)"),
     Option("Delete", "delete(sess)"),
-    Option("Boilerplate Data", "boilerplate(sess)"),
+    Option("Update", "update(sess)"),
     Option("Commit", "sess.commit()"),
     Option("Rollback", "session_rollback(sess)"),
     Option("Exit this application", "pass")
@@ -37,49 +37,18 @@ report_data_menu = Menu('report data', 'Please indicate what kind of data you wa
     Option("Exit", "pass")
 ])
 
-delete_menu = Menu('delete', 'Please indicate what you want to delete from:', [
-    Option("Department", "delete_department(sess)"),
-    Option("Course", "delete_course(sess)"),
-    Option("Major", "delete_major(sess)"),
-    Option("Student", "delete_student(sess)"),
-    Option("Section", "delete_section(sess)"),
-    Option("Student to Major", "delete_student_major(sess)"),
-    Option("Major to Student", "delete_major_student(sess)"),
-    Option("Student to Section", "delete_student_section(sess)"),
-    Option("Section to Student", "delete_student_section(sess)"),
+delete_menu = Menu('delete', 'Please indicate what you want to delete:', [
+    Option("Part", "delete_part(sess)"),
+    Option("Assembly Part (AKA Usage)", "delete_assembly_part(sess)"),
+    Option("Vendor", "delete_vendor(sess)"),
     Option("Exit", "pass")
 ])
 
-list_menu = Menu('list', 'Please indicate what you want to list:', [
-    Option("Department", "list_department(sess)"),
-    Option("Course", "list_course(sess)"),
-    Option("Major", "list_major(sess)"),
-    Option("Student", "list_student(sess)"),
-    Option("Section", "list_section(sess)"),
-    Option("Student to Major", "list_student_major(sess)"),
-    Option("Major to Student", "list_major_student(sess)"),
-    Option("Student to Section", "list_student_section(sess)"),
-    Option("Section to Student", "list_section_student(sess)"),
-    Option("Enrollment", "list_enrollment(sess)"),
+update_menu = Menu('update', 'Please indicate what kind of data you want to update: ', [
+    Option("Part", "update_part(sess)"),
+    Option("Assembly Part (AKA Usage)", "update_assembly_part(sess)"),
+    Option("Vendor", "update_vendor(sess)"),
     Option("Exit", "pass")
-])
-
-schedule_menu = Menu('schedule', 'Please indicate the section schedule:', [
-    Option("Monday/Wednesday", "MW"),
-    Option("Monday/Wednesday/Friday", "MWF"),
-    Option("Tuesday/Thursday", "TuTh"),
-    Option("Friday only", "F"),
-    Option("Saturday only", "S"),
-    Option("test bogus", "LOL")
-])
-
-semester_menu = Menu('semester', 'Please indicate the section semester:', [
-    Option("Fall", "Fall"),
-    Option("Spring", "Spring"),
-    Option("Winter", "Winter"),
-    Option("Summer I", "Summer I"),
-    Option("Summer II", "Summer II"),
-    Option("Summer III", "Summer III")
 ])
 
 # A menu to prompt for the amount of logging information to go to the console.
