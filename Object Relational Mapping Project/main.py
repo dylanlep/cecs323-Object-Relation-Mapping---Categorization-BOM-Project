@@ -158,6 +158,40 @@ def delete(sess):
     menu_action = delete_menu.menu_prompt()
     exec(menu_action)
 
+def delete_part(sess):
+    # get part to delete
+    name = input("Enter part name: ")
+    result = sess.execute(
+        select(Part).where(Part.name == name)
+    )
+    part = result.scalars().first()
+
+    # if part could not be found, then deletion cannot be done
+    if part is None:
+        print("")
+        return
+    
+    # otherwise, let's check if any assembly parts depend on this part; if so,
+    # then we once again cannot delete this object
+    result = sess.execute(
+        select(AssemblyPart).where(AssemblyPart.assembly_part_name == name)
+    )
+
+    if result.scalars().first is not None:
+        print("")
+        return
+    
+    result = sess.execute(
+        select(AssemblyPart).where(AssemblyPart.component_part_name == name)
+    )
+
+    if result.scalars().first is not None:
+        print("")
+        return
+    
+    # only if we are able to get here do we finally delete the part!
+    sess.delete(part)
+
 def delete_assembly_part(sess):
     # look for assembly part
     assembly_name = input("Enter assembly name: ")
@@ -202,7 +236,7 @@ def delete_vendor(sess):
 
     # if any exist, then we cannot delete this vendor!
     if (dependent_part is not None):
-        print(f"Piece part with name {dependent_part.part_name} depends on this vendor.")
+        print(f"Piece part with name {dependent_part.name} depends on this vendor.")
         return
     
     # otherwise, delete it
