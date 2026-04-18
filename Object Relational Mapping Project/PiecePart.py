@@ -19,4 +19,4 @@ class PiecePart(Part):
         self.vendor_name = vendor.name
     
     def __str__(self):
-        return f"{super()}, Vendor: {self.vendor_name}"
+        return f"{super().__str__()}, Vendor: {self.vendor_name}"
