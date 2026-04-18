@@ -49,7 +49,38 @@ def add_assembly(sess):
     sess.add(Assembly(name, num))
 
 def add_assembly_part(sess):
-    pass
+    component_part = None
+    assembly_part = None
+    quantity = 0
+
+    # search for the component part
+    component_name = input('Enter component name: ')
+    result = sess.execute(
+        select(Part).where(Part.name == component_name)
+    )
+
+    component_part = result.scalars().first()
+
+    if (component_part is None):
+        print(f'Component with name {component_name} could not be found.')
+        return
+
+    # search for the assembly part
+    assembly_name = input('Enter assembly name: ')
+    result = sess.execute(
+        select(Part).where(Part.name == assembly_name)
+    )
+
+    assembly_part = result.scalars().first()
+
+    if (assembly_part is None):
+        print(f'Assembly with name {assembly_name} could not be found.')
+        return
+
+    # finally, get the quantity, and add it to the table
+    quantity = int(input('Enter quantity used: '))
+
+    sess.add(AssemblyPart(assembly_part, component_part, quantity))
 
 def add_vendor(sess):
     name = input('Enter vendor name: ')
