@@ -1,4 +1,6 @@
 import logging
+from sqlalchemy import select
+
 from db_connection import engine, Session
 from orm_base import Base
 
@@ -19,6 +21,26 @@ sess = Session
 def add(sess):
     menu_action = add_menu.menu_prompt()
     exec(menu_action)
+
+def add_piece_part(sess):
+    # get info needed to create piece part
+    name = input('Enter piece part name: ')
+    num = input('Enter piece part number: ')
+    vendor = None
+
+    # search for the vendor of the part
+    vendor_name = input('Enter vendor name: ')
+    result = sess.execute(
+        select(Vendor).where(Vendor.name == vendor_name)
+    )
+
+    vendor = result.scalars().first()
+    
+    # if vendor cannot be found, then we cannot create the piece part
+    if vendor is None:
+        print(f'Vendor with name {vendor_name} could not be found.')
+    else:
+        sess.add(PiecePart(name, num, vendor))
 
 def add_vendor(sess):
     name = input('Enter vendor name: ')
