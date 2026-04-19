@@ -78,7 +78,6 @@ def add_assembly_part(sess):
     result = sess.execute(
         select(Part).where(Part.name == assembly_name)
     )
-
     assembly_part = result.scalars().first()
 
     if (assembly_part is None):
@@ -383,7 +382,12 @@ def max_component_report(sess):
             )
         )
         count = result.scalar_one()
-        counts.append((assembly, count))
+        if count > 0:
+            counts.append((assembly, count))
+
+    if not counts:
+        print("No assemblies have component parts.")
+        return
 
     max_count = max(count for _, count in counts)
 
