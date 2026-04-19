@@ -18,7 +18,7 @@ menu_main = Menu('main', 'Please select one of the following options:', [
     Option("Required Reports", "reports(sess)"),
     Option("Delete", "delete(sess)"),
     Option("Update", "update(sess)"),
-    Option("Commit", "sess.commit()"),
+    Option("Commit", "do_commit(sess)"),
     Option("Rollback", "session_rollback(sess)"),
     Option("Exit this application", "pass")
 ])
