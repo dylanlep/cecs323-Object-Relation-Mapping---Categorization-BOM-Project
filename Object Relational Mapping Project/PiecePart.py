@@ -1,16 +1,26 @@
 from sqlalchemy import ForeignKey, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from Part import Part
 
 class PiecePart(Part):
     __tablename__ = "piece_parts"
     
-    part_name: Mapped[str] = mapped_column('part_name', 
-                                          ForeignKey("parts.name", ondelete="CASCADE"), 
-                                          primary_key=True)
-    vendor_name: Mapped[str] = mapped_column('vendor_name', 
-                                            ForeignKey("vendors.name"), 
-                                            nullable=False)
+    part_name: Mapped[str] = mapped_column(
+        'part_name',
+        ForeignKey("parts.name", ondelete="CASCADE"),
+        primary_key=True
+    )
+
+    vendor_name: Mapped[str] = mapped_column(
+        'vendor_name',
+        ForeignKey("vendors.name"),
+        nullable=False
+    )
+
+    vendor: Mapped["Vendor"] = relationship(
+        "Vendor",
+        back_populates="piece_parts"
+    )
 
     __mapper_args__ = {"polymorphic_identity": "piece_part"}
 
