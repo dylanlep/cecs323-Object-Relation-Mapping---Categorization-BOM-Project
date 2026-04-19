@@ -4,6 +4,8 @@ from sqlalchemy import select, and_, func
 
 from db_connection import engine, Session
 from orm_base import Base
+import logging
+logging.disable(logging.CRITICAL)
 
 # Import your new Task 1 classes here. 
 # This ensures SQLAlchemy "sees" them and creates the tables.
@@ -18,6 +20,10 @@ from AssemblyPart import AssemblyPart
 from menu_definitions import *
 
 sess = Session
+
+def session_rollback(sess):
+    sess.rollback()
+    print("Transaction rolled back.")
 
 #region Add
 def add(sess):
@@ -88,6 +94,10 @@ def add_vendor(sess):
     name = input('Enter vendor name: ')
     sess.add(Vendor(name))
 #endregion
+
+def reports(sess):
+    menu_action = report_menu.menu_prompt()
+    exec(menu_action)
 
 #region Report Data
 def report_data(sess):
@@ -257,11 +267,11 @@ def update_part(sess):
 
     # if part could not be found, then update cannot be done
     if part is None:
-        print("")
-
+        print(f"Part with name {name} could not be found.")
+        return
     # otherwise, we let the user change the part number
     else:
-        new_number = int(input("Enter new part number: "))
+        new_number = input("Enter new part number: ")
         part.number = new_number
 
 def update_assembly_part(sess):
@@ -287,7 +297,15 @@ def update_assembly_part(sess):
     else:
         quantity = int(input("Enter new quantity: "))
         assembly_part.quantity = quantity
-
+        
+def do_commit(sess):
+    try:
+        sess.commit()
+        print("Commit successful.")
+    except Exception as e:
+        sess.rollback()
+        print(f"Commit failed: {e}")
+        
 def update_vendor(sess):
     # get vendor to update
     name = input("Enter vendor name: ")
@@ -315,12 +333,71 @@ def update_vendor(sess):
     vendor.name = new_name
 #endregion
 
+def hierarchy_report(sess):
+    name = input("Enter the starting part name: ")
+    result = sess.execute(
+        select(Part).where(Part.name == name)
+    )
+    start_part = result.scalars().first()
+
+    if start_part is None:
+        print(f"Part with name {name} could not be found.")
+        return
+
+    print_hierarchy(sess, start_part.name, "0", 0)
+
+
+def print_hierarchy(sess, part_name, label, level):
+    result = sess.execute(
+        select(Part).where(Part.name == part_name)
+    )
+    part = result.scalars().first()
+
+    if part is None:
+        return
+
+    print(f"{'\t' * level}{label} - {part.name}")
+
+    result = sess.execute(
+        select(AssemblyPart).where(AssemblyPart.assembly_part_name == part.name)
+    )
+    children = result.scalars().all()
+
+    for index, child in enumerate(children, start=1):
+        child_label = f"{index}" if label == "0" else f"{label}.{index}"
+        print_hierarchy(sess, child.component_part_name, child_label, level + 1)
+
+def max_component_report(sess):
+    result = sess.execute(select(Assembly))
+    assemblies = result.scalars().all()
+
+    if not assemblies:
+        print("No assemblies found.")
+        return
+
+    counts = []
+    for assembly in assemblies:
+        result = sess.execute(
+            select(func.count()).select_from(AssemblyPart).where(
+                AssemblyPart.assembly_part_name == assembly.name
+            )
+        )
+        count = result.scalar_one()
+        counts.append((assembly, count))
+
+    max_count = max(count for _, count in counts)
+
+    print("Assemblies with greatest number of component parts:")
+    for assembly, count in counts:
+        if count == max_count:
+            print(f"Part number: {assembly.number}, Part name: {assembly.name}, Number of component parts: {count}")
+
 if __name__ == "__main__":
     print("Starting Part Categorization BOM Project...")
     
     # orm_base.py will prompt you for the schema name automatically.
     # Make sure you have run 'CREATE SCHEMA <your_schema_name>;' in Postgres first.
-    
+
     try:
         print("Dropping existing tables...")
         Base.metadata.drop_all(engine)
