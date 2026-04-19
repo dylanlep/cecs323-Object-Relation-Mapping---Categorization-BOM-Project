@@ -1,7 +1,6 @@
 import logging
 
-from sqlalchemy import select
-from sqlalchemy import and_
+from sqlalchemy import select, and_, func
 
 from db_connection import engine, Session
 from orm_base import Base
