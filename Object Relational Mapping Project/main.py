@@ -358,7 +358,9 @@ def print_hierarchy(sess, part_name, label, level):
     print(f"{'\t' * level}{label} - {part.name}")
 
     result = sess.execute(
-        select(AssemblyPart).where(AssemblyPart.assembly_part_name == part.name)
+        select(AssemblyPart)
+        .where(AssemblyPart.assembly_part_name == part.name)
+        .order_by(AssemblyPart.component_part_name)
     )
     children = result.scalars().all()
 
@@ -391,10 +393,13 @@ def max_component_report(sess):
 
     max_count = max(count for _, count in counts)
 
-    print("Assemblies with greatest number of component parts:")
+    print("\nAssemblies with greatest number of component parts:")
     for assembly, count in counts:
         if count == max_count:
-            print(f"Part number: {assembly.number}, Part name: {assembly.name}, Number of component parts: {count}")
+            print(f"Part number: {assembly.number}")
+            print(f"Part name: {assembly.name}")
+            print(f"Number of component parts: {count}")
+            print()
 
 if __name__ == "__main__":
     print("Starting Part Categorization BOM Project...")
